@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>Reflex test</title>
+<script src="jquery.js"></script>
+</head>
+<body style="text-align:center">
+<h1>Reflex test</h1>
+<div id="c">
+<div>
+Click "Start" (or press space bar) and wait for the letter to appear. Then press key on the keyboard that matches displayed letter.
+</div><br><br>
+<div id="letter" style="margin: 0px auto;text-align: center;font-size:20px;
+width:100px;padding: 30px;border:1px solid #000000">
+&nbsp;</div>
+
+<div id="buttons"><form action=''>
+<input type="button" id="b" value="Start" />
+<input type="button" value="Clear results" onclick="location.href='reflex.html'" />
+</form>
+</form>
+</div>
+<br />
+<div id="s"></div>
+<br /><br />
+<div id="z"></div><br /><br />
+<div id="r" style="margin: 0px auto;width:200px;"></div>
+</div>
+<script>
+var letter = "";
+var previousResults = new Array();
+var startTime = "";
+var next = 0;
+var inprogress=0;
+
+array = new Array("a", "b", "c", "d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","v","z","x","w","q","y");
+function showLetter() {
+	letterN = Math.floor(Math.random()*array.length);
+	$("#b").val("Press displayed letter");
+	letter=array[letterN];
+	document.getElementById("letter").innerHTML = letter.toUpperCase();
+	startTime = (new Date()).getTime();
+}
+
+
+
+
+function listResults() {
+	var t = "<table>";
+	var xT = 0;
+	
+	for(var i = 0; i<next;i++) {
+		var z1 = previousResults[i];
+		var z = z1.split('|');
+		xT=xT+parseInt(z[1]);
+		t+="<tr><td>"+z[0]+"</td><td>"+z[1]+" ms</td></tr>";
+	}
+	t+="</table>";
+	$("#r").html(t);
+	$("#z").html("Your average reaction time: "+Math.floor(xT/next)+" ms");
+}
+
+$('#b').click(function() {
+	start();
+});
+
+$(document).keydown(function(event){if(event.keyCode==32){start();}
+
+   if ( letter== String.fromCharCode(event.keyCode)
+   || letter.toUpperCase()== String.fromCharCode(event.keyCode)
+   ) {
+       endTime = (new Date()).getTime();
+	   diff = endTime-startTime;
+	   previousResults[next]=letter+"|"+diff;
+	   next++;
+	   //alert( diff + " ms");
+		$("#b").val("Start");
+		$("#letter").html("&nbsp;");
+		$("#s").html(diff+" ms");
+		letter="";
+		inprogress=0;
+		startTime="";
+		
+		listResults();
+	   }else{
+	   
+	   }
+});
+
+function start() {
+if(!inprogress) {
+time = Math.floor(Math.random()*4000)+500;
+$("#b").val("Wait ...");
+setTimeout("showLetter()", time);
+inprogress=1;
+}
+}
+</script>
+</body>
+</html>
